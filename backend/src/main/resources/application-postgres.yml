@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/busmaua}
+    username: ${DB_USUARIO:busmaua}
+    password: ${DB_SENHA:busmaua}
+  jpa:
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: false
+
+busmaua:
+  demo:
+    habilitado: ${BUSMAUA_DEMO:false}

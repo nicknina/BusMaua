@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: busmaua
+  datasource:
+    url: jdbc:h2:mem:busmaua;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+busmaua:
+  jwt:
+    # Em produção, defina a variável JWT_SECRET (Base64, mínimo de 32 bytes)
+    secret: ${JWT_SECRET:YnVzbWF1YS1jaGF2ZS1kZS1kZXNlbnZvbHZpbWVudG8tdHJvcXVlLWVtLXByb2R1Y2Fv}
+    expiracao-horas: 12
+  cors:
+    # Inclui a rede local para testar o app pelo celular (ex.: http://192.168.0.10:5173)
+    origens: ${CORS_ORIGENS:http://localhost:[*],http://127.0.0.1:[*],http://192.168.*:[*],https://192.168.*:[*],https://*.ngrok-free.app}
+  fila:
+    # Tempo que o aluno tem para embarcar depois de ser chamado
+    minutos-para-embarcar: 5
+    # O aluno é chamado quando o veículo está a este número de minutos do ponto dele
+    minutos-para-chamar: 5
+  demo:
+    # Cria usuários, frota, linhas e um histórico de viagens para apresentação
+    habilitado: ${BUSMAUA_DEMO:true}
