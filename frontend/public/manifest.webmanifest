@@ -1,0 +1,13 @@
+{
+  "name": "BusMauá",
+  "short_name": "BusMauá",
+  "description": "Transporte universitário do Instituto Mauá em tempo real",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EFEFEF",
+  "theme_color": "#0B4EA2",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/icone.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
