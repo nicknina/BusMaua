@@ -170,3 +170,15 @@ mvn -s ../settings-publico.xml -gs ../settings-publico.xml spring-boot:run
 
 Para rodar frontend:
 npm run dev
+
+### Contas de teste
+
+| Perfil          | E-mail                                | Senha     | Aba no login | O que dá para fazer                                          |
+| --------------- | ------------------------------------- | --------- | ------------ | ------------------------------------------------------------ |
+| Aluno           | `aluno@maua.br`                       | `maua123` | Aluno        | Mapa ao vivo, fila virtual, horários e notificações          |
+| Motorista       | `carlos@maua.br`                      | `maua123` | Motorista    | Iniciar viagem, compartilhar GPS e controlar o embarque      |
+| Motorista       | `marcos@maua.br`                      | `maua123` | Motorista    | Igual ao anterior (para testar dois veículos ao mesmo tempo) |
+| Administração   | `admin@maua.br`                       | `maua123` | Aluno        | Frota ao vivo e demanda por horário                          |
+| Alunos de teste | `aluno01@maua.br` … `aluno50@maua.br` | `maua123` | Aluno        | Contas usadas no histórico e na fila de exemplo              |
+
+> O banco H2 é recriado a cada vez que o backend inicia. As contas acima são criadas automaticamente, e qualquer cadastro novo é perdido ao reiniciar.

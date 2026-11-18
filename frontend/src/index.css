@@ -114,6 +114,10 @@ body {
   background: #dce6ef;
 }
 
+.leaflet-tile-pane {
+  filter: saturate(0.55) brightness(1.04);
+}
+
 .leaflet-control-attribution {
   font-size: 9px;
 }

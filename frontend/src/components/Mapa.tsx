@@ -35,10 +35,19 @@ const ICONE_ONIBUS = svg(
 const ICONE_PIN = svg(
   '<path d="M20 10c0 5-5.5 10.2-7.4 11.8a1 1 0 0 1-1.2 0C9.5 20.2 4 15 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
 );
-const ICONE_NAVEGACAO = svg('<polygon points="3 11 22 2 13 21 11 13 3 11"/>', 20);
+const ICONE_NAVEGACAO = svg(
+  '<polygon points="3 11 22 2 13 21 11 13 3 11"/>',
+  20,
+);
 
 function escapar(texto: string) {
-  return texto.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+  return texto.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ]!,
+  );
 }
 
 function iconeVeiculo(m: MarcadorVeiculo) {
@@ -65,7 +74,15 @@ function iconeVoce(estilo: "aluno" | "motorista") {
   });
 }
 
-export function Mapa({ rota, veiculos = [], voce, seguirVoce, aoClicarVeiculo, className, children }: PropsMapa) {
+export function Mapa({
+  rota,
+  veiculos = [],
+  voce,
+  seguirVoce,
+  aoClicarVeiculo,
+  className,
+  children,
+}: PropsMapa) {
   const elemento = useRef<HTMLDivElement>(null);
   const mapa = useRef<L.Map | null>(null);
   const camadaRota = useRef<L.LayerGroup | null>(null);
@@ -78,11 +95,14 @@ export function Mapa({ rota, veiculos = [], voce, seguirVoce, aoClicarVeiculo, c
   // cria o mapa uma única vez
   useEffect(() => {
     if (!elemento.current) return;
-    const m = L.map(elemento.current, { zoomControl: false, attributionControl: true }).setView(CENTRO_PADRAO, 14);
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    const m = L.map(elemento.current, {
+      zoomControl: false,
+      attributionControl: true,
+    }).setView(CENTRO_PADRAO, 14);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
-      subdomains: "abcd",
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(m);
     m.attributionControl.setPrefix(false);
     camadaRota.current = L.layerGroup().addTo(m);
@@ -109,7 +129,12 @@ export function Mapa({ rota, veiculos = [], voce, seguirVoce, aoClicarVeiculo, c
     if (!rota || rota.length === 0) return;
 
     const pontos = rota.map((p) => [p.latitude, p.longitude] as L.LatLngTuple);
-    L.polyline(pontos, { color: "#0B4EA2", weight: 6, opacity: 0.9, lineJoin: "round" }).addTo(camada);
+    L.polyline(pontos, {
+      color: "#0B4EA2",
+      weight: 6,
+      opacity: 0.9,
+      lineJoin: "round",
+    }).addTo(camada);
     rota.forEach((p) => {
       L.circleMarker([p.latitude, p.longitude], {
         radius: 7,
@@ -135,7 +160,10 @@ export function Mapa({ rota, veiculos = [], voce, seguirVoce, aoClicarVeiculo, c
     if (!camada) return;
     camada.clearLayers();
     veiculos.forEach((v) => {
-      L.marker([v.ponto.lat, v.ponto.lng], { icon: iconeVeiculo(v), zIndexOffset: v.destaque ? 500 : 0 })
+      L.marker([v.ponto.lat, v.ponto.lng], {
+        icon: iconeVeiculo(v),
+        zIndexOffset: v.destaque ? 500 : 0,
+      })
         .on("click", () => cliqueRef.current?.(v.id))
         .addTo(camada);
     });
@@ -147,16 +175,27 @@ export function Mapa({ rota, veiculos = [], voce, seguirVoce, aoClicarVeiculo, c
     if (!camada) return;
     camada.clearLayers();
     if (!voce) return;
-    L.marker([voce.ponto.lat, voce.ponto.lng], { icon: iconeVoce(voce.estilo), zIndexOffset: 1000 }).addTo(camada);
+    L.marker([voce.ponto.lat, voce.ponto.lng], {
+      icon: iconeVoce(voce.estilo),
+      zIndexOffset: 1000,
+    }).addTo(camada);
     if (seguirVoce && mapa.current) {
-      mapa.current.setView([voce.ponto.lat, voce.ponto.lng], Math.max(mapa.current.getZoom(), 15), { animate: true });
+      mapa.current.setView(
+        [voce.ponto.lat, voce.ponto.lng],
+        Math.max(mapa.current.getZoom(), 15),
+        { animate: true },
+      );
     }
   }, [voce, seguirVoce]);
 
   return (
     <div className={classes("relative overflow-hidden bg-mapa", className)}>
       <div ref={elemento} className="absolute inset-0" />
-      {children && <div className="pointer-events-none absolute inset-0 z-[500]">{children}</div>}
+      {children && (
+        <div className="pointer-events-none absolute inset-0 z-[500]">
+          {children}
+        </div>
+      )}
     </div>
   );
 }
