@@ -31,6 +31,9 @@ public class AuthService {
                 .filter(u -> encoder.matches(req.senha(), u.getSenhaHash()))
                 .orElseThrow(() -> new RegraNegocioException("E-mail ou senha incorretos."));
 
+        if (!usuario.estaAtivo()) {
+            throw new RegraNegocioException("Esta conta está desativada. Procure a administração do transporte.");
+        }
         if (req.perfil() == Perfil.MOTORISTA && usuario.getPerfil() == Perfil.ALUNO) {
             throw new RegraNegocioException("Esta conta é de aluno. Entre pela aba Aluno.");
         }

@@ -77,7 +77,7 @@ export function Login() {
         </button>
         {ajudaSenha && (
           <Alerta tipo="info">
-            Para redefinir a senha, procure a secretaria ou o setor de transporte do Instituto Mauá.
+            Procure a administração do transporte do Instituto Mauá: ela pode redefinir a sua senha.
           </Alerta>
         )}
 

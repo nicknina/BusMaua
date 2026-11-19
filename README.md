@@ -29,6 +29,10 @@ Orientador: Prof. Dr. Jhonny Frank Sousa Joca
 
 - Frota ao vivo e resumo do dia.
 - **Demanda por horário**: média de solicitações na fila × embarques confirmados, comparecimento e ocupação, com uma indicação de van ou ônibus. A indicação é só apoio: a decisão sobre a frota continua com a gestão.
+- **Horários**: criar, editar e desativar saídas de cada linha, com local de saída e veículo escalado.
+- **Veículos**: cadastro da frota (nome, placa, tipo e capacidade), com ativação e desativação.
+- **Linhas e paradas**: criar e editar linhas; adicionar, reordenar, editar e excluir paradas. A posição de cada parada é escolhida clicando no mapa.
+- **Motoristas e contas**: criar contas de motorista, desativar ou reativar contas e redefinir a senha de quem esqueceu.
 
 ## Arquitetura
 
@@ -85,13 +89,17 @@ npm run dev
 
 Abra `http://localhost:5173`. Em desenvolvimento, o Vite encaminha `/api` e `/ws` para o backend.
 
-### Contas de teste (senha `maua123`)
+### Contas de teste
 
-| Perfil        | E-mail                                                            |
-| ------------- | ----------------------------------------------------------------- |
-| Aluno         | `aluno@maua.br` (há também `aluno01@maua.br` … `aluno50@maua.br`) |
-| Motorista     | `carlos@maua.br`, `marcos@maua.br`                                |
-| Administração | `admin@maua.br` (entrar pela aba Aluno)                           |
+| Perfil          | E-mail                                | Senha     | Aba no login | O que dá para fazer                                          |
+| --------------- | ------------------------------------- | --------- | ------------ | ------------------------------------------------------------ |
+| Aluno           | `aluno@maua.br`                       | `maua123` | Aluno        | Mapa ao vivo, fila virtual, horários e notificações          |
+| Motorista       | `carlos@maua.br`                      | `maua123` | Motorista    | Iniciar viagem, compartilhar GPS e controlar o embarque      |
+| Motorista       | `marcos@maua.br`                      | `maua123` | Motorista    | Igual ao anterior (para testar dois veículos ao mesmo tempo) |
+| Administração   | `admin@maua.br`                       | `maua123` | Aluno        | Frota ao vivo e demanda por horário                          |
+| Alunos de teste | `aluno01@maua.br` … `aluno50@maua.br` | `maua123` | Aluno        | Contas usadas no histórico e na fila de exemplo              |
+
+> O banco H2 é recriado a cada vez que o backend inicia. As contas acima são criadas automaticamente, e qualquer cadastro novo é perdido ao reiniciar.
 
 ### Roteiro rápido de demonstração
 
@@ -116,23 +124,29 @@ Para apresentar sem sair do lugar, crie `frontend/.env` com `VITE_SIMULAR_GPS=tr
 
 ## Principais endpoints
 
-| Método       | Caminho                                                                  | Perfil    | Descrição                                 |
-| ------------ | ------------------------------------------------------------------------ | --------- | ----------------------------------------- |
-| POST         | `/api/auth/login`                                                        | —         | Login (`email`, `senha`, `perfil`)        |
-| POST         | `/api/auth/cadastro`                                                     | —         | Cadastro de aluno (e-mail `@maua.br`)     |
-| GET          | `/api/linhas`                                                            | todos     | Linhas, paradas e horários                |
-| GET          | `/api/viagens/proximas`                                                  | todos     | Saídas de hoje (agendadas e em rota)      |
-| GET          | `/api/notificacoes`                                                      | todos     | Avisos do usuário e gerais                |
-| POST         | `/api/fila`                                                              | aluno     | Entrar na fila (`viagemId`, `paradaId`)   |
-| GET / DELETE | `/api/fila/minha`                                                        | aluno     | Situação na fila / sair da fila           |
-| POST         | `/api/fila/minha/embarque`                                               | aluno     | Confirmar embarque                        |
-| POST         | `/api/motorista/viagens/iniciar`                                         | motorista | Iniciar viagem (`veiculoId`, `horarioId`) |
-| POST         | `/api/motorista/viagens/{id}/localizacao`                                | motorista | Enviar posição GPS                        |
-| POST         | `/api/motorista/viagens/{id}/pausar` · `retomar` · `atraso` · `encerrar` | motorista | Controle da viagem                        |
-| GET          | `/api/motorista/viagens/{id}/fila`                                       | motorista | Fila da viagem                            |
-| POST         | `/api/motorista/viagens/{id}/fila/{entradaId}/confirmar`                 | motorista | Check-in de um aluno                      |
-| POST         | `/api/motorista/viagens/{id}/lotacao`                                    | motorista | Ajuste manual da lotação (`delta`)        |
-| GET          | `/api/admin/resumo` · `/api/admin/demanda?dias=14`                       | admin     | Painel de gestão                          |
+| Método              | Caminho                                                                                                     | Perfil    | Descrição                                 |
+| ------------------- | ----------------------------------------------------------------------------------------------------------- | --------- | ----------------------------------------- |
+| POST                | `/api/auth/login`                                                                                           | —         | Login (`email`, `senha`, `perfil`)        |
+| POST                | `/api/auth/cadastro`                                                                                        | —         | Cadastro de aluno (e-mail `@maua.br`)     |
+| GET                 | `/api/linhas`                                                                                               | todos     | Linhas, paradas e horários                |
+| GET                 | `/api/viagens/proximas`                                                                                     | todos     | Saídas de hoje (agendadas e em rota)      |
+| GET                 | `/api/notificacoes`                                                                                         | todos     | Avisos do usuário e gerais                |
+| POST                | `/api/fila`                                                                                                 | aluno     | Entrar na fila (`viagemId`, `paradaId`)   |
+| GET / DELETE        | `/api/fila/minha`                                                                                           | aluno     | Situação na fila / sair da fila           |
+| POST                | `/api/fila/minha/embarque`                                                                                  | aluno     | Confirmar embarque                        |
+| POST                | `/api/motorista/viagens/iniciar`                                                                            | motorista | Iniciar viagem (`veiculoId`, `horarioId`) |
+| POST                | `/api/motorista/viagens/{id}/localizacao`                                                                   | motorista | Enviar posição GPS                        |
+| POST                | `/api/motorista/viagens/{id}/pausar` · `retomar` · `atraso` · `encerrar`                                    | motorista | Controle da viagem                        |
+| GET                 | `/api/motorista/viagens/{id}/fila`                                                                          | motorista | Fila da viagem                            |
+| POST                | `/api/motorista/viagens/{id}/fila/{entradaId}/confirmar`                                                    | motorista | Check-in de um aluno                      |
+| POST                | `/api/motorista/viagens/{id}/lotacao`                                                                       | motorista | Ajuste manual da lotação (`delta`)        |
+| GET                 | `/api/admin/resumo` · `/api/admin/demanda?dias=14`                                                          | admin     | Painel de gestão                          |
+| GET / POST / PUT    | `/api/admin/veiculos` · `/api/admin/veiculos/{id}`                                                          | admin     | Cadastro da frota                         |
+| GET / POST / PUT    | `/api/admin/linhas` · `/api/admin/linhas/{id}`                                                              | admin     | Linhas (com todas as paradas e horários)  |
+| POST / PUT          | `/api/admin/linhas/{id}/horarios` · `/api/admin/horarios/{id}`                                              | admin     | Grade de horários                         |
+| POST / PUT / DELETE | `/api/admin/linhas/{id}/paradas` · `/api/admin/paradas/{id}` · `/api/admin/paradas/{id}/mover?direcao=cima` | admin     | Paradas                                   |
+| GET / POST / PUT    | `/api/admin/motoristas` · `/api/admin/usuarios/{id}`                                                        | admin     | Contas de motorista e ativação            |
+| POST                | `/api/admin/usuarios/redefinir-senha`                                                                       | admin     | Redefinir senha (`email`, `novaSenha`)    |
 
 Tópicos WebSocket (`/ws`, STOMP): `/topic/frota`, `/topic/viagens/{id}/fila`, `/topic/notificacoes`.
 
@@ -162,8 +176,6 @@ frontend/
 - A localização compartilhada é a do **veículo**, somente durante uma viagem iniciada pelo motorista. A dos alunos fica no aparelho, usada para mostrar "Você" no mapa e sugerir o ponto mais próximo.
 - Senhas guardadas com BCrypt; acesso à API com token JWT.
 
-> As coordenadas das paradas são aproximadas e podem ser ajustadas em `backend/src/main/java/br/maua/busmaua/config/CargaInicial.java`.
-
 Para rodar backend:
 
 mvn -s ../settings-publico.xml -gs ../settings-publico.xml spring-boot:run
@@ -181,4 +193,4 @@ npm run dev
 | Administração   | `admin@maua.br`                       | `maua123` | Aluno        | Frota ao vivo e demanda por horário                          |
 | Alunos de teste | `aluno01@maua.br` … `aluno50@maua.br` | `maua123` | Aluno        | Contas usadas no histórico e na fila de exemplo              |
 
-> O banco H2 é recriado a cada vez que o backend inicia. As contas acima são criadas automaticamente, e qualquer cadastro novo é perdido ao reiniciar.
+> As coordenadas das paradas são aproximadas e podem ser ajustadas em `backend/src/main/java/br/maua/busmaua/config/CargaInicial.java`.

@@ -21,4 +21,6 @@ public interface FilaRepository extends JpaRepository<FilaEntrada, Long> {
     List<FilaEntrada> findByStatusAndChamadoEmBefore(StatusFila status, Instant limite);
 
     List<FilaEntrada> findByViagemDataBetween(LocalDate inicio, LocalDate fim);
+
+    boolean existsByParadaId(Long paradaId);
 }

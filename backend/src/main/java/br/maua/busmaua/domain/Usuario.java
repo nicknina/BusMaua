@@ -33,11 +33,18 @@ public class Usuario {
 
     private Instant criadoEm = Instant.now();
 
+    /** Contas desativadas pela administração não conseguem entrar (ex.: motorista desligado). */
+    private Boolean ativo = true;
+
     public Usuario(String nome, String email, String senhaHash, Perfil perfil) {
         this.nome = nome;
         this.email = email.toLowerCase();
         this.senhaHash = senhaHash;
         this.perfil = perfil;
+    }
+
+    public boolean estaAtivo() {
+        return ativo == null || ativo;
     }
 
     /** "Ana Paula Ferreira" vira "Ana F." — evita expor o nome completo para o motorista. */

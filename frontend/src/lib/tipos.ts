@@ -122,6 +122,33 @@ export interface ResumoAdmin {
   embarquesHoje: number;
 }
 
+// ----- gestão (painel da administração)
+
+export interface VeiculoAdmin extends Veiculo {
+  ativo: boolean;
+}
+
+export interface HorarioAdmin extends HorarioLinha {
+  ativo: boolean;
+}
+
+export interface LinhaAdmin {
+  id: number;
+  nome: string;
+  origem: string;
+  destino: string;
+  paradas: Parada[];
+  horarios: HorarioAdmin[];
+}
+
+export interface UsuarioAdmin {
+  id: number;
+  nome: string;
+  email: string;
+  perfil: Perfil;
+  ativo: boolean;
+}
+
 export interface DemandaHorario {
   horarioId: number;
   linha: string;

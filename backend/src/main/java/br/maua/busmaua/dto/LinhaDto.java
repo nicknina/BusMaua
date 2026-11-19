@@ -5,6 +5,7 @@ import br.maua.busmaua.domain.Linha;
 import br.maua.busmaua.domain.Parada;
 import br.maua.busmaua.util.Fuso;
 
+import java.util.Comparator;
 import java.util.List;
 
 public record LinhaDto(Long id, String nome, String origem, String destino,
@@ -26,7 +27,7 @@ public record LinhaDto(Long id, String nome, String origem, String destino,
 
     public static LinhaDto de(Linha l) {
         return new LinhaDto(l.getId(), l.getNome(), l.getOrigem(), l.getDestino(),
-                l.getParadas().stream().map(ParadaDto::de).toList(),
+                l.getParadas().stream().sorted(Comparator.comparingInt(Parada::getOrdem)).map(ParadaDto::de).toList(),
                 l.getHorarios().stream().filter(Horario::isAtivo).map(HorarioDto::de).toList());
     }
 }

@@ -57,6 +57,7 @@ async function requisicao<T>(metodo: Metodo, caminho: string, corpo?: unknown): 
 export const api = {
   get: <T>(caminho: string) => requisicao<T>("GET", caminho),
   post: <T>(caminho: string, corpo: unknown = {}) => requisicao<T>("POST", caminho, corpo),
+  put: <T>(caminho: string, corpo: unknown) => requisicao<T>("PUT", caminho, corpo),
   delete: <T>(caminho: string) => requisicao<T>("DELETE", caminho),
 };
 
